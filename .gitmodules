@@ -1,0 +1,3 @@
+[submodule "bike-brain"]
+	path = bike-brain
+	url = git@github.com:p0ntan/vteam-bike-brain.git
