@@ -1,0 +1,77 @@
+version: "3.8"
+
+volumes:
+  express_node_modules:
+
+services:
+  mariadb:
+    image: "mariadb:10.11.6"
+    container_name: "mariadb"
+    working_dir: "/docker-entrypoint-initdb.d"
+    volumes:
+      - ./server/mariadb/:/docker-entrypoint-initdb.d
+    environment:
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 1
+    healthcheck: # TODO check more in detail what healthcheck times does (start_period, interval etc.)
+      test: ["CMD", "/usr/local/bin/healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: 
+        "always"
+
+  express: # Not adding image-name here because it is local
+    container_name: "express"
+    build: "./server"
+    working_dir: "/express/app"
+    healthcheck:
+      test: ["CMD", "node", "healthcheck.js"]
+      start_period: 5s
+      interval: 5s
+      timeout: 5s
+    volumes:
+      - "./server/app/:/express/app"
+      - "express_node_modules:/express/app/node_modules"
+    ports:
+      - "1337:1337"
+    command: npm run dev
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    restart:
+        "on-failure"
+
+  python: # Not adding image-name here because it is local
+    container_name: "bike-python"
+    build: "./bike-brain"
+    working_dir: "/bike/app"
+    volumes:
+      - "./bike-brain/app/:/bike/app"
+      - "/bike/app/src/__pycache__"
+    links:
+      - "express:express-server"
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+    command: python app.py
+    depends_on:
+      express:
+        condition: service_healthy
+    restart:
+      "on-failure"
+
+  web-client: # Not adding image-name here because it is local
+    container_name: "simple-map"
+    build: "./simple-map"
+    working_dir: "/usr/share/nginx/html/"
+    volumes:
+      - "./simple-map/src/:/usr/share/nginx/html/"
+    ports:
+      - "5000:80"
+    links:
+      - "express:express-server"
+    depends_on:
+      express:
+        condition: service_healthy
+    restart:
+      "on-failure"
