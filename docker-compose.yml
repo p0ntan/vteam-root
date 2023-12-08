@@ -8,7 +8,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: bikes
     volumes:
-      - "./vteam-server/mariadb/:/docker-entrypoint-initdb.d/"
+      - "./server/mariadb/:/docker-entrypoint-initdb.d/"
     ports:
       - "3306:3306"
     healthcheck:
@@ -27,7 +27,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: test
     volumes:
-      - "./vteam-server/mariadb/:/docker-entrypoint-initdb.d/"
+      - "./server/mariadb/:/docker-entrypoint-initdb.d/"
     ports:
       - "3307:3306"
     healthcheck:
@@ -41,7 +41,7 @@ services:
 
   server:
     build:
-      context: "./vteam-server/"
+      context: "./server/"
       dockerfile: "./server/Dockerfile"
     container_name: "server"
     environment:
@@ -54,16 +54,16 @@ services:
       TEST_DATABASE: ${TEST_DB_NAME}
       JWT_SECRET: ${JWT_SECRET}
     volumes:
-      - ./vteam-server/server/package.json:/server/package.json
-      - ./vteam-server/server/package-lock.json:/server/package-lock.json
-      - ./vteam-server/server/mocha.json:/server/mocha.json
-      - ./vteam-server/server/app.js:/server/app.js
-      - ./vteam-server/server/routes/:/server/routes/
-      - ./vteam-server/server/test/:/server/test/
-      - ./vteam-server/server/src/:/server/src/
-      - ./vteam-server/server/.eslintignore:/server/.eslintignore
-      - ./vteam-server/server/.eslintrc.json:/server/.eslintrc.json
-      - ./vteam-server/server/.prettierignore:/server/.prettierignore
+      - ./server/server/package.json:/server/package.json
+      - ./server/server/package-lock.json:/server/package-lock.json
+      - ./server/server/mocha.json:/server/mocha.json
+      - ./server/server/app.js:/server/app.js
+      - ./server/server/routes/:/server/routes/
+      - ./server/server/test/:/server/test/
+      - ./server/server/src/:/server/src/
+      - ./server/server/.eslintignore:/server/.eslintignore
+      - ./server/server/.eslintrc.json:/server/.eslintrc.json
+      - ./server/server/.prettierignore:/server/.prettierignore
     ports:
       - "1337:1337"
     depends_on:
@@ -73,7 +73,7 @@ services:
         condition: service_healthy
     restart: "always"
 
-  python: # Not adding image-name here because it is local
+  python:
     container_name: "bike-python"
     build: "./bike-brain"
     working_dir: "/bike/app"
