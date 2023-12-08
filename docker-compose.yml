@@ -1,46 +1,77 @@
 version: "3.8"
 
-volumes:
-  express_node_modules:
-
 services:
-  mariadb:
-    image: "mariadb:10.11.6"
-    container_name: "mariadb"
-    working_dir: "/docker-entrypoint-initdb.d"
-    volumes:
-      - ./server/mariadb/:/docker-entrypoint-initdb.d
+  mariadb-bikes:
+    image: "mariadb:latest"
+    container_name: "mariadb-bikes"
     environment:
-      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 1
-    healthcheck: # TODO check more in detail what healthcheck times does (start_period, interval etc.)
-      test: ["CMD", "/usr/local/bin/healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized"]
-      start_period: 10s
-      interval: 10s
-      timeout: 5s
-      retries: 3
-    restart: 
-        "always"
-
-  express: # Not adding image-name here because it is local
-    container_name: "express"
-    build: "./server"
-    working_dir: "/express/app"
-    healthcheck:
-      test: ["CMD", "node", "healthcheck.js"]
-      start_period: 5s
-      interval: 5s
-      timeout: 5s
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: bikes
     volumes:
-      - "./server/app/:/express/app"
-      - "express_node_modules:/express/app/node_modules"
+      - "./vteam-server/mariadb/:/docker-entrypoint-initdb.d/"
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized"]
+      start_period: 15s
+      interval: 15s
+      timeout: 10s
+      retries: 5
+    restart: "always"
+    command: "--init-file /docker-entrypoint-initdb.d/setup-bikes.sql"
+
+  mariadb-test:
+    image: "mariadb:latest"
+    container_name: "mariadb-test"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: test
+    volumes:
+      - "./vteam-server/mariadb/:/docker-entrypoint-initdb.d/"
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized"]
+      start_period: 15s
+      interval: 15s
+      timeout: 10s
+      retries: 5
+    restart: "always"
+    command: "--init-file /docker-entrypoint-initdb.d/setup-test.sql"
+
+  server:
+    build:
+      context: "./vteam-server/"
+      dockerfile: "./server/Dockerfile"
+    container_name: "server"
+    environment:
+      DB_HOST: ${DB_SERVICE_NAME}
+      DB_TEST_HOST: ${TEST_SERVICE_NAME}
+      DB_PORT: "3306"
+      DB_USER: "root"
+      DB_PASSWORD: ${DB_ROOT_PASSWORD}
+      DB_DATABASE: ${DB_NAME}
+      TEST_DATABASE: ${TEST_DB_NAME}
+      JWT_SECRET: ${JWT_SECRET}
+    volumes:
+      - ./vteam-server/server/package.json:/server/package.json
+      - ./vteam-server/server/package-lock.json:/server/package-lock.json
+      - ./vteam-server/server/mocha.json:/server/mocha.json
+      - ./vteam-server/server/app.js:/server/app.js
+      - ./vteam-server/server/routes/:/server/routes/
+      - ./vteam-server/server/test/:/server/test/
+      - ./vteam-server/server/src/:/server/src/
+      - ./vteam-server/server/.eslintignore:/server/.eslintignore
+      - ./vteam-server/server/.eslintrc.json:/server/.eslintrc.json
+      - ./vteam-server/server/.prettierignore:/server/.prettierignore
     ports:
       - "1337:1337"
-    command: npm run dev
     depends_on:
-      mariadb:
+      mariadb-bikes:
         condition: service_healthy
-    restart:
-        "on-failure"
+      mariadb-test:
+        condition: service_healthy
+    restart: "always"
 
   python: # Not adding image-name here because it is local
     container_name: "bike-python"
@@ -50,28 +81,13 @@ services:
       - "./bike-brain/app/:/bike/app"
       - "/bike/app/src/__pycache__"
     links:
-      - "express:express-server"
+      - "server:express-server"
     environment:
       - PYTHONDONTWRITEBYTECODE=1
+      - API_URL=${P_API_URL}
+      - PYTEST_ADDOPTS=-p no:cacheprovider
     command: python app.py
     depends_on:
-      express:
-        condition: service_healthy
-    restart:
-      "on-failure"
-
-  web-client: # Not adding image-name here because it is local
-    container_name: "simple-map"
-    build: "./simple-map"
-    working_dir: "/usr/share/nginx/html/"
-    volumes:
-      - "./simple-map/src/:/usr/share/nginx/html/"
-    ports:
-      - "5000:80"
-    links:
-      - "express:express-server"
-    depends_on:
-      express:
-        condition: service_healthy
+      - server
     restart:
       "on-failure"
