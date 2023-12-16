@@ -79,7 +79,6 @@ services:
     working_dir: "/bike/app"
     volumes:
       - "./bike-brain/app/:/bike/app"
-      - "/bike/app/src/__pycache__"
     links:
       - "server:express-server"
     environment:
@@ -102,8 +101,6 @@ services:
       # to avoid the "Cross-site POST form submissions are forbidden" error
       # when using form actions with the node adapter
       - ORIGIN=http://localhost:3000
-      - PUBLIC_MAPTILER_API_KEY=${PUBLIC_MAPTILER_API_KEY}
-      - PUBLIC_REST_API_URL=${PUBLIC_REST_API_URL}
     depends_on:
       - server
     restart: always
