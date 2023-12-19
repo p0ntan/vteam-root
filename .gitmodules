@@ -4,3 +4,6 @@
 [submodule "server"]
 	path = server
 	url = git@github.com:JuliaLind/vteam-server.git
+[submodule "admin-web-client"]
+	path = admin-web-client
+	url = git@github.com:kiwijos/admin-web-client.git

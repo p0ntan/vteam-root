@@ -79,15 +79,30 @@ services:
     working_dir: "/bike/app"
     volumes:
       - "./bike-brain/app/:/bike/app"
-      - "/bike/app/src/__pycache__"
     links:
       - "server:express-server"
     environment:
       - PYTHONDONTWRITEBYTECODE=1
-      - API_URL=${P_API_URL}
+      - API_URL=${PYTHON_API_URL}
       - PYTEST_ADDOPTS=-p no:cacheprovider
     command: python app.py
     depends_on:
       - server
-    restart:
-      "on-failure"
+    restart: "always"
+
+  admin-web-service:
+    container_name: "admin-web-container"
+    # image: admin-web-image
+    build:
+      context: "./admin-web-client/"
+      dockerfile: "./Dockerfile"
+    environment:
+      # Explicitly tell SvelteKit where the app is being served
+      # to avoid the "Cross-site POST form submissions are forbidden" error
+      # when using form actions with the node adapter
+      - ORIGIN=http://localhost:3000
+    depends_on:
+      - server
+    restart: always
+    ports:
+      - 3000:3000
