@@ -2,42 +2,41 @@ version: "3.8"
 
 services:
   mariadb-bikes:
-    image: "mariadb:latest"
+    image: "mariadb:10.11.6"
     container_name: "mariadb-bikes"
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: bikes
     volumes:
-      - "./server/mariadb/:/docker-entrypoint-initdb.d/"
+      - "./server/mariadb/:/mariadb/"
+      - "./server/mariadb/docker/:/docker-entrypoint-initdb.d/"
     ports:
       - "3306:3306"
     healthcheck:
-      test: ["CMD", "/usr/local/bin/healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized"]
-      start_period: 15s
-      interval: 15s
-      timeout: 10s
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u${DB_USER}", "-p${DB_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
       retries: 5
     restart: "always"
-    command: "--init-file /docker-entrypoint-initdb.d/setup-bikes.sql"
 
   mariadb-test:
-    image: "mariadb:latest"
+    image: "mariadb:10.11.6"
     container_name: "mariadb-test"
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: test
+      MYSQLD_LOCAL_INFILE: "1"
     volumes:
-      - "./server/mariadb/:/docker-entrypoint-initdb.d/"
+      - "./server/mariadb/:/mariadb/"
+      - "./server/mariadb/docker/:/docker-entrypoint-initdb.d/"
     ports:
       - "3307:3306"
     healthcheck:
-      test: ["CMD", "/usr/local/bin/healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized"]
-      start_period: 15s
-      interval: 15s
-      timeout: 10s
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u${DB_USER}", "-p${DB_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
       retries: 5
     restart: "always"
-    command: "--init-file /docker-entrypoint-initdb.d/setup-test.sql"
 
   server:
     build:
@@ -58,6 +57,7 @@ services:
       - ./server/server/package-lock.json:/server/package-lock.json
       - ./server/server/mocha.json:/server/mocha.json
       - ./server/server/app.js:/server/app.js
+      - ./server/server/server.js:/server/server.js
       - ./server/server/routes/:/server/routes/
       - ./server/server/test/:/server/test/
       - ./server/server/src/:/server/src/
@@ -90,19 +90,19 @@ services:
       - server
     restart: "always"
 
-  admin-web-service:
-    container_name: "admin-web-container"
-    # image: admin-web-image
-    build:
-      context: "./admin-web-client/"
-      dockerfile: "./Dockerfile"
-    environment:
-      # Explicitly tell SvelteKit where the app is being served
-      # to avoid the "Cross-site POST form submissions are forbidden" error
-      # when using form actions with the node adapter
-      - ORIGIN=http://localhost:3000
-    depends_on:
-      - server
-    restart: always
-    ports:
-      - 3000:3000
+  # admin-web-service:
+  #   container_name: "admin-web-container"
+  #   # image: admin-web-image
+  #   build:
+  #     context: "./admin-web-client/"
+  #     dockerfile: "./Dockerfile"
+  #   environment:
+  #     # Explicitly tell SvelteKit where the app is being served
+  #     # to avoid the "Cross-site POST form submissions are forbidden" error
+  #     # when using form actions with the node adapter
+  #     - ORIGIN=http://localhost:3000
+  #   depends_on:
+  #     - server
+  #   restart: always
+  #   ports:
+  #     - 3000:3000
