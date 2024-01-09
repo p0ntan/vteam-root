@@ -7,3 +7,6 @@
 [submodule "admin-web-client"]
 	path = admin-web-client
 	url = git@github.com:kiwijos/admin-web-client.git
+[submodule "user-web-client"]
+	path = user-web-client
+	url = git@github.com:kiwijos/user-web-client.git
