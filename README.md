@@ -32,7 +32,7 @@ This submodule contains all the code for website used by users. [Link to repo](h
 ### user-app-client
 
 ## Setup
-See the .env.example for needed .env-variables to run the system locally. You also have to create .env-files for all the clients used in the system (admin/user/user), check what is needen in each of these repos. 
+See the .env.example for needed .env-variables to run the system locally. You also have to create .env-files for all the clients used in the system (admin/user/user), check what is needed in each one of these repos.
 
 With all .env-files in place, run the repo with the following command to build all the docker-containers and start the system.
 
