@@ -23,32 +23,8 @@ services:
   server:
     build:
       context: "./server/"
-      dockerfile: "./server/Dockerfile"
+      dockerfile: "./server/Dockerfile-prod"
     container_name: "server"
-    environment:
-      DB_HOST: ${DB_SERVICE_NAME}
-      DB_TEST_HOST: ${TEST_SERVICE_NAME}
-      DB_PORT: "3306"
-      DB_USER: "root"
-      DB_PASSWORD: ${DB_ROOT_PASSWORD}
-      DB_DATABASE: ${DB_NAME}
-      TEST_DATABASE: ${TEST_DB_NAME}
-      JWT_SECRET: ${JWT_SECRET}
-    volumes:
-      - ./server/server/coverage:/server/coverage
-      - ./server/server/package.json:/server/package.json
-      - ./server/server/package-lock.json:/server/package-lock.json
-      - ./server/server/mocha.json:/server/mocha.json
-      - ./server/server/app.js:/server/app.js
-      - ./server/server/server.js:/server/server.js
-      - ./server/server/routes/:/server/routes/
-      - ./server/server/test/:/server/test/
-      - ./server/server/src/:/server/src/
-      - ./server/server/views/:/server/views/
-      - ./server/server/public/:/server/public/
-      - ./server/server/.eslintignore:/server/.eslintignore
-      - ./server/server/.eslintrc.json:/server/.eslintrc.json
-      - ./server/server/.prettierignore:/server/.prettierignore
     ports:
       - "1337:1337"
     depends_on:
