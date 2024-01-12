@@ -38,7 +38,7 @@ See the .env.example for needed .env-variables to run the system locally. Some o
 ./setup.bash up --env
 ```
 
-You can also skip the --env flag if you already have the needed .env-files and just run:
+You can also skip the --env flag if you already have the all needed .env-files in the submodules and just run:
 
 ```
 ./setup.bash up
