@@ -13,6 +13,10 @@ SCRIPT=$( basename "$0" )
 # Current version
 VERSION="1.0.0"
 
+# GLOBAL .env path
+ORIGINAL_ENV="$(pwd)/.env"
+ENV_CONTENT=$(cat "$ORIGINAL_ENV")
+
 #
 # Message to display for usage and help.
 #
@@ -74,9 +78,57 @@ function version
 #
 function app-up
 {
+    if [ "$1" == "--env" ]; then
+        setup
+    fi
     # Start the system
     docker-compose up -d --build
 }
+
+#
+# Function to crate .env-files
+#
+function setup
+{
+    aw_files
+    uw_files
+}
+
+#
+# Function to create .env for admin web
+#
+function aw_files
+{
+    path="$(pwd)/admin-web-client/"
+
+    echo "$ENV_CONTENT" | grep "^PUBLIC_[^G]" > "$path.env"
+    sed -n 's/^AW_\(.*\)$/\1/p' "$ORIGINAL_ENV" >> "$path.env"
+}
+
+#
+# Function to create .env for user web
+#
+function uw_files
+{
+    path="$(pwd)/user-web-client/"
+
+    echo "$ENV_CONTENT" | grep "^PUBLIC_[^G]" > "$path.env"
+    sed -n 's/^UW_\(.*\)$/\1/p' "$ORIGINAL_ENV" >> "$path.env"
+    echo "$ENV_CONTENT" | grep "GITHUB" >> "$path.env"
+}
+
+#
+# Function to create .env for user web
+#
+function ua_files
+{
+    path="$(pwd)/user-app-client/"
+
+    echo "$ENV_CONTENT" | grep "^PUBLIC_[^G]" > "$path.env"
+    sed -n 's/^UA_\(.*\)$/\1/p' "$ORIGINAL_ENV" >> "$path.env"
+    echo "$ENV_CONTENT" | grep "GITHUB" >> "$path.env"
+}
+
 
 #
 # Function to shut down the container
@@ -108,6 +160,7 @@ function main
             ;;
 
             up            \
+            | setup       \
             | down)
                 command="$1"
                 shift
