@@ -32,17 +32,22 @@ This submodule contains all the code for website used by users. [Link to repo](h
 ### user-app-client
 
 ## Setup
-See the .env.example for needed .env-variables to run the system locally. You also have to create .env-files for all the clients used in the system (admin/user/user), check what is needed in each one of these repos.
+See the .env.example for needed .env-variables to run the system locally. Some of the submodules needs their own .env file, but to make it much easier for you the bashscript system.bash will take care of it for you. See the individual repos for more detail if needed. To set up the .env files and start the system run the command:
 
-With all .env-files in place, run the repo with the following command to build all the docker-containers and start the system.
+```
+./setup.bash up --env
+```
+
+You can also skip the --env flag if you already have the all needed .env-files in the submodules and just run:
 
 ```
 ./setup.bash up
 ```
 
-## Teardown
-Just use the following command to stop the system, shut down the docker-network and remove all images that was built during setup.
+This will build all the docker-containers and start the system.
 
+## Teardown
+Just use the following command to stop the system, shut down the docker-network and remove all images that was built during setup. 
 
 ```
 ./setup.bash down
