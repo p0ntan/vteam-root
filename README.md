@@ -36,24 +36,43 @@ To clone this repo together with all the submodules, run the command:
 
 ```
 git clone --recursive https://github.com/p0ntan/vteam-root.git
+
+# For SSH
+# git clone --recursive git@github.com:p0ntan/vteam-root.git
 ```
 
-See the .env.example for needed .env-variables in your own .env to run the system locally. Some of the submodules needs their own .env file, but to make it easier for you the bashscript setup.bash will take care of it for you. If you want you can see the individual repos for more detail. To set up the .env files and start the system run the command:
+See the .env.example for needed .env-variables in your own .env to run the system locally. Some of the submodules needs their own .env file, but to make it easier for you the bashscript setup.bash will take care of it for you. When all variables in place just run:
 
 ```
-./setup.bash up --env
+./setup.bash env
 ```
 
-The flag --env is only needed the first time to setup all the .env-files. Next time you start the system/repo you can skip the --env flag and just run:
+### Development
+You can then start the system in a development-mode, just run the command: 
 
 ```
+./setup.bash dev
+
+# Pro-tip, use the flag --env and to create the .env at the same time instead of in two commands.
+# ./setup.bash dev -- env
+```
+
+This will start all the submodules in their own containers with all files added as volumes so you keep working with your local files in the editing software of your choice. You can also enter containers to run tests with the command:
+
+```
+docker exec -it <container-name> bash
+```
+
+### Production
+Or if you feel that you've hade enough of all that development. You can then run the system in smaller more production-like containers with the command:
+
+```
+# Pro-tip, you can use the --env flag here aswell.
 ./setup.bash up
 ```
 
-This will build all the docker-containers and start the system.
-
 ## Teardown
-Just use the following command to stop the system, shut down the docker-network and remove all images that was built during setup. 
+Just use the following command to stop the system, shut down the docker-network and remove all images and volumes that was built during setup.
 
 ```
 ./setup.bash down
