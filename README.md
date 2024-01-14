@@ -32,13 +32,19 @@ This submodule contains all the code for website used by users. [Link to repo](h
 ### user-app-client
 
 ## Setup
-See the .env.example for needed .env-variables to run the system locally. Some of the submodules needs their own .env file, but to make it much easier for you the bashscript system.bash will take care of it for you. See the individual repos for more detail if needed. To set up the .env files and start the system run the command:
+To clone this repo together with all the submodules, run the command:
+
+```
+git clone --recursive https://github.com/p0ntan/vteam-root.git
+```
+
+See the .env.example for needed .env-variables in your own .env to run the system locally. Some of the submodules needs their own .env file, but to make it easier for you the bashscript setup.bash will take care of it for you. If you want you can see the individual repos for more detail. To set up the .env files and start the system run the command:
 
 ```
 ./setup.bash up --env
 ```
 
-You can also skip the --env flag if you already have the all needed .env-files in the submodules and just run:
+The flag --env is only needed the first time to setup all the .env-files. Next time you start the system/repo you can skip the --env flag and just run:
 
 ```
 ./setup.bash up
