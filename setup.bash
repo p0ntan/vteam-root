@@ -36,6 +36,8 @@ function usage
 "      --env             Use flag --env for setting up the .env files."
 "   down                 Shut down the system and remove images and volumes."
 ""
+"   bike                 Restarts the bike-container and enters it for easier development" 
+""
 ""
 "Options:"
 ""
@@ -116,6 +118,16 @@ function app-env
 
 
 #
+# Function to work with the bike-brain
+#
+function app-bike
+{
+    docker stop bike-python
+    docker-compose -f docker-compose.dev.yml run python bash
+}
+
+
+#
 # Function to create .env for admin web
 #
 function aw_files
@@ -125,6 +137,7 @@ function aw_files
     echo "$ENV_CONTENT" | grep "^PUBLIC_[^G]" > "$path.env"
     sed -n 's/^AW_\(.*\)$/\1/p' "$ORIGINAL_ENV" >> "$path.env"
 }
+
 
 #
 # Function to create .env for user web
@@ -190,6 +203,7 @@ function main
             | env         \
             | setup       \
             | dev         \
+            | bike        \
             | down)
                 command="$1"
                 shift

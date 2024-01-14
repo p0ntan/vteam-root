@@ -63,6 +63,12 @@ This will start all the submodules in their own containers with all files added 
 docker exec -it <container-name> bash
 ```
 
+The container for the bike-brain is a bit different, it will startup from the start but need to restart when any changes is made. To make it easier when developing, just run:
+```
+./setup.bash bike
+```
+Which will restart the container and then keep you inside it for starting files and whatever is needed.
+
 ### Production
 Or if you feel that you've hade enough of all that development. You can then run the system in smaller more production-like containers with the command:
 

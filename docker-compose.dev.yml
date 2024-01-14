@@ -98,6 +98,7 @@ services:
       - API_KEY=${PYTHON_API_KEY}
     depends_on:
       - server
+    command: "python app.py"
     restart: "on-failure"
 
   admin-web-service:
