@@ -29,8 +29,12 @@ function usage
 ""
 "Commands:"
 ""
-"   up                   Start the system."
-"   down                 Shut down the system."
+"   env                  Creating all needed .env files."
+"   dev                  Start the systems development-environment."
+"      --env             Use flag --env for setting up the .env files."
+"   prod                   Start the system."
+"      --env             Use flag --env for setting up the .env files."
+"   down                 Shut down the system and remove images."
 ""
 ""
 "Options:"
@@ -74,25 +78,42 @@ function version
 }
 
 #
-# Function to start the container
+# Function to start the system as close to production as possible
 #
 function app-up
 {
     if [ "$1" == "--env" ]; then
-        setup
+        app-env
     fi
+
     # Start the system
     docker-compose up -d --build
 }
 
 #
-# Function to crate .env-files
+# Function to start the container
 #
-function setup
+function app-dev
+{
+    if [ "$1" == "--env" ]; then
+        app-env
+    fi
+
+    # Start the system
+    docker-compose -f docker-compose.dev.yml up -d --build
+}
+
+
+#
+# Function to set up the .env files
+#
+function app-env
 {
     aw_files
     uw_files
+    echo ".env-files created"
 }
+
 
 #
 # Function to create .env for admin web
@@ -137,7 +158,13 @@ function app-down
 {
     # Close the container and remove the images
     # Using --rmi local only removes the images that hasn't been "named" in docker-compose
-    docker-compose down -v --rmi local
+    dev="$(docker ps | grep "mariadb-test")"
+    if [ "$dev" == "" ]; then
+        docker-compose down -v --rmi local
+    else
+        
+        docker-compose -f docker-compose.dev.yml down -v --rmi local
+    fi
 }
 
 #
@@ -160,7 +187,9 @@ function main
             ;;
 
             up            \
+            | env         \
             | setup       \
+            | dev         \
             | down)
                 command="$1"
                 shift
