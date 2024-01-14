@@ -1,0 +1,126 @@
+version: "3.8"
+
+services:
+  mariadb-bikes:
+    image: "mariadb:10.11.6"
+    container_name: "mariadb-bikes"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+    volumes:
+      - "./server/mariadb/csv/:/csv/"
+      - "./server/mariadb/sql/:/sql/"
+      - "./server/mariadb/setup-bikes.sql:/docker-entrypoint-initdb.d/setup-bikes.sql"
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u${DB_USER}", "-p${DB_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: "always"
+
+  mariadb-test:
+    image: "mariadb:10.11.6"
+    container_name: "mariadb-test"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: test
+      MYSQLD_LOCAL_INFILE: "1"
+    volumes:
+      - "./server/mariadb/csv/:/csv/"
+      - "./server/mariadb/sql/:/sql/"
+      - "./server/mariadb/setup-test.sql:/docker-entrypoint-initdb.d/setup-test.sql"
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u${DB_USER}", "-p${DB_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: "always"
+
+  server:
+    build:
+      context: "./server/"
+      dockerfile: "./server/Dockerfile"
+    container_name: "server"
+    environment:
+      DB_HOST: ${DB_SERVICE_NAME}
+      DB_PORT: "3306"
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_ROOT_PASSWORD}
+      DB_DATABASE: ${DB_NAME}
+      JWT_SECRET: ${JWT_SECRET}
+    volumes:
+      - ./server/server/coverage:/server/coverage
+      - ./server/server/package.json:/server/package.json
+      - ./server/server/package-lock.json:/server/package-lock.json
+      - ./server/server/mocha.json:/server/mocha.json
+      - ./server/server/app.js:/server/app.js
+      - ./server/server/server.js:/server/server.js
+      - ./server/server/routes/:/server/routes/
+      - ./server/server/test/:/server/test/
+      - ./server/server/src/:/server/src/
+      - ./server/server/views/:/server/views/
+      - ./server/server/public/:/server/public/
+      - ./server/server/.eslintignore:/server/.eslintignore
+      - ./server/server/.eslintrc.json:/server/.eslintrc.json
+      - ./server/server/.prettierignore:/server/.prettierignore
+    ports:
+      - "1337:1337"
+    depends_on:
+      mariadb-bikes:
+        condition: service_healthy
+      mariadb-test:
+        condition: service_healthy
+    restart: "always"
+
+  python:
+    container_name: "bike-python"
+    build:
+      context: "./bike-brain/"
+      dockerfile: "./Dockerfile-prod"
+    working_dir: "/bike/app"
+    links:
+      - "server:express-server"
+    environment:
+      - API_URL=${PYTHON_API_URL}
+      - API_KEY=${PYTHON_API_KEY}
+    depends_on:
+      - server
+    restart: "always"
+
+  # admin-web-service:
+  #   container_name: "admin-web-container"
+  #   build:
+  #     context: "./admin-web-client/"
+  #     dockerfile: "./Dockerfile"
+  #   environment:
+  #     # Explicitly tell SvelteKit where the app is being served
+  #     # to avoid the "Cross-site POST form submissions are forbidden" error
+  #     # when using form actions with the node adapter
+  #     - ORIGIN=http://localhost:3000
+  #   depends_on:
+  #     - server
+  #   restart: always
+  #   links:
+  #     - "server:express-server"
+  #   ports:
+  #     - 3000:3000
+
+  # user-web-service:
+  #   container_name: user-web-container
+  #   build:
+  #     context: "./user-web-client/"
+  #     dockerfile: "./Dockerfile"
+  #   environment:
+  #     # Explicitly tell SvelteKit where the app is being served
+  #     # to avoid the "Cross-site POST form submissions are forbidden" error
+  #     # when using form actions with the node adapter
+  #     - ORIGIN=http://localhost:5173
+  #   restart: always
+  #   links:
+  #     - "server:express-server"
+  #   ports:
+  #     - 5173:3000
