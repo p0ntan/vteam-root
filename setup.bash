@@ -34,7 +34,7 @@ function usage
 "      --env             Use flag --env for setting up the .env files."
 "   prod                   Start the system."
 "      --env             Use flag --env for setting up the .env files."
-"   down                 Shut down the system and remove images."
+"   down                 Shut down the system and remove images and volumes."
 ""
 ""
 "Options:"
