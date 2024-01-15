@@ -1,10 +1,8 @@
 # vteam-root
 
 <p align="center">
-<img src="./riders.png" alt="Picture of a true biker." width="400">
+<img src="./scooter-round.png" alt="Picture of an electric scooter." width="400">
 </p>
-
-<p align="center">We want you! To try our bike renting system.</p>
 
 This repo is for the course vteam at BTH, made by group vteam-2. The repo contains serveral submodules that together builds a complete system to for renting and managing electric scooters/bikes.
 
@@ -77,14 +75,14 @@ Or if you feel that you've hade enough of all that development. You can then run
 ./setup.bash env
 
 # Start system
-./setup.bash up
+./setup.bash prod
 ```
 
 Or with one single command where you can just add the flag --env to the up-command:
 
 ```
 # Sets up .env-files and starts the system
-./setup.bash up --env
+./setup.bash prod --env
 ```
 
 ## Clients

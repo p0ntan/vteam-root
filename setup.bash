@@ -194,9 +194,8 @@ function main
                 exit 0
             ;;
 
-            up            \
+            prod          \
             | env         \
-            | setup       \
             | dev         \
             | bike        \
             | down)
