@@ -1,6 +1,9 @@
 # vteam-root
 
-![Picture of a true biker.](./riders.png)
+<!-- ![Picture of a true biker.](./riders.png) -->
+<p align="center">
+<img src="./riders.png" alt="Picture of a true biker." style="max-width: 430px;">
+</p>
 
 <p align="center">We want you! To try our bike renting system.</p>
 
