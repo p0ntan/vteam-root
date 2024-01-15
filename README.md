@@ -2,6 +2,8 @@
 
 ![Picture of a true biker.](./riders.png)
 
+<p style="text-align: center">I want you! To try our bike renting system.</p>
+
 This repo is for the course vteam at BTH, made by group vteam-2. The repo contains serveral submodules that together builds a complete system to for renting and managing electric scooters/bikes.
 
 ## Submodules
