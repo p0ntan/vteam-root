@@ -33,10 +33,13 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-    - run: |
+
+    - name: Install dependencies    
+      run: |
         cd admin-web-client
         npm ci
-    - run: |
-        cd admin-web-client
         npx playwright install --with-deps
+    - name: Run test
+      run: |
+        cd admin-web-client        
         npm test
