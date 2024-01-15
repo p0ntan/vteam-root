@@ -1,6 +1,5 @@
 # vteam-root
 
-<!-- ![Picture of a true biker.](./riders.png) -->
 <p align="center">
 <img src="./riders.png" alt="Picture of a true biker." width="400">
 </p>
