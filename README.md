@@ -81,6 +81,13 @@ Or with one single command where you can just add the flag --env to the up-comma
 ./setup.bash up --env
 ```
 
+## Clients
+No matter how you run the system, our guess is that you want to see some of the clients in action? Well here are some links to find what you might be looking for:
+
+- [Admin web client](http://localhost:3000)
+- [User web client](http://localhost:5173)
+- [User app](http://localhost:5174)
+
 ## Teardown
 Just use the following command to stop the system, shut down the docker-network and remove all images and volumes that was built during setup.
 
