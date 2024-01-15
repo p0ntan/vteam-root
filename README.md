@@ -2,7 +2,7 @@
 
 <!-- ![Picture of a true biker.](./riders.png) -->
 <p align="center">
-<img src="./riders.png" alt="Picture of a true biker." max-width="50%">
+<img src="./riders.png" alt="Picture of a true biker." width="400">
 </p>
 
 <p align="center">We want you! To try our bike renting system.</p>
