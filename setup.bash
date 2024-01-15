@@ -81,7 +81,7 @@ function version
 #
 # Function to start the system as close to production as possible
 #
-function app-up
+function app-prod
 {
     if [ "$1" == "--env" ]; then
         app-env
