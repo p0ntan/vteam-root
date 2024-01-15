@@ -31,7 +31,6 @@ function usage
 ""
 "   env                  Creating all needed .env files."
 "   dev                  Start the system in a development containers."
-"      --env             Use flag --env for setting up the .env files."
 "   prod                 Start the system in production-like containers."
 "      --env             Use flag --env for setting up the .env files."
 "   down                 Shut down the system and remove images and volumes."
@@ -97,10 +96,6 @@ function app-up
 #
 function app-dev
 {
-    if [ "$1" == "--env" ]; then
-        app-env
-    fi
-
     # Start the system
     docker-compose -f docker-compose.dev.yml up -d --build
 }
