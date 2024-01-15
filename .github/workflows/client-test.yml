@@ -12,6 +12,8 @@ env:
   PUBLIC_MAPTILER_API_KEY: ${{secrets.MAPTILER_KEY}}
   PUBLIC_REST_API_URL: ${{secrets.REST_API_URL}}
   PRIVATE_REST_API_KEY: ${{secrets.REST_API_KEY}}
+  PUBLIC_GITHUB_ID: ${{secrets.APP_ID}}
+  GITHUB_SECRET: ${{secrets.APP_SECRET}}
 
 jobs:
   build:
@@ -34,12 +36,24 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: Install dependencies    
+    - name: Install dependencies for admin-web 
       run: |
         cd admin-web-client
         npm ci
         npx playwright install --with-deps
-    - name: Run test
+    
+    - name: Run admin-web tests
       run: |
         cd admin-web-client        
+        npm test
+  
+    - name: Install dependencies for user-web 
+      run: |
+        cd user-web-client
+        npm ci
+        npx playwright install --with-deps
+    
+    - name: Run user-web tests
+      run: |
+        cd user-web-client        
         npm test
