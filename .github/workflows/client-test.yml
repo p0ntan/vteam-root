@@ -5,7 +5,7 @@ name: Clients (node) CI
 
 on:
   push:
-    branches: [ "**" ]
+    branches: [ "main" ]
   pull_request:
     branches: ['main']
 env:
@@ -56,4 +56,15 @@ jobs:
     - name: Run user-web tests
       run: |
         cd user-web-client        
+        npm test
+
+    - name: Install dependencies for user-app 
+      run: |
+        cd user-app-client
+        npm ci
+        npx playwright install --with-deps
+    
+    - name: Run user-app tests
+      run: |
+        cd user-app-client        
         npm test
