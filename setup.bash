@@ -24,7 +24,7 @@ function usage
 {
     local txt=(
 ""
-"Script $SCRIPT is used to work with log-data."
+"Script $SCRIPT is used for easy setup for system."
 "Usage: $SCRIPT [options] <command> [arguments]"
 ""
 "Commands:"
