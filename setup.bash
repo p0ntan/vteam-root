@@ -108,6 +108,7 @@ function app-env
 {
     aw_files
     uw_files
+    ua_files
     echo ".env-files created"
 }
 
@@ -143,7 +144,6 @@ function uw_files
 
     echo "$ENV_CONTENT" | grep "^PUBLIC_[^G]" > "$path.env"
     sed -n 's/^UW_\(.*\)$/\1/p' "$ORIGINAL_ENV" >> "$path.env"
-    echo "$ENV_CONTENT" | grep "GITHUB" >> "$path.env"
 }
 
 #
@@ -155,7 +155,6 @@ function ua_files
 
     echo "$ENV_CONTENT" | grep "^PUBLIC_[^G]" > "$path.env"
     sed -n 's/^UA_\(.*\)$/\1/p' "$ORIGINAL_ENV" >> "$path.env"
-    echo "$ENV_CONTENT" | grep "GITHUB" >> "$path.env"
 }
 
 
