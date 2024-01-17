@@ -1,5 +1,9 @@
 # vteam-root
 
+<p align="center">
+<img src="./scooter-round.png" alt="Picture of an electric scooter." width="400">
+</p>
+
 This repo is for the course vteam at BTH, made by group vteam-2. The repo contains serveral submodules that together builds a complete system to for renting and managing electric scooters/bikes.
 
 ## Submodules
@@ -41,41 +45,52 @@ git clone --recursive https://github.com/p0ntan/vteam-root.git
 # git clone --recursive git@github.com:p0ntan/vteam-root.git
 ```
 
-See the .env.example for needed .env-variables in your own .env to run the system locally. Some of the submodules needs their own .env file, but to make it easier for you the bashscript setup.bash will take care of it for you. When all variables in place just run:
-
-```
-./setup.bash env
-```
+See the .env.example for needed .env-variables in your own .env to run the system locally.
 
 ### Development
-You can then start the system in a development-mode, just run the command: 
+Once all .env-variables is in place you can then start the system in a development-mode, just run the command: 
 
 ```
 ./setup.bash dev
-
-# Pro-tip, use the flag --env and to create the .env at the same time instead of in two commands.
-# ./setup.bash dev -- env
 ```
 
-This will start all the submodules in their own containers with all files added as volumes so you keep working with your local files in the editing software of your choice. You can also enter containers to run tests with the command:
+This will start all the submodules in their own containers with all files added as volumes so you keep working with your local files in the editing software of your choice. You can then enter containers to run tests with the command:
 
 ```
 docker exec -it <container-name> bash
 ```
 
-The container for the bike-brain is a bit different, it will startup from the start but need to restart when any changes is made. To make it easier when developing, just run:
+The container for the bike-brain is a bit different, you can still enter it with the command above but it needs to be restarted when any changes is made. To make it easier when developing, just run:
 ```
 ./setup.bash bike
 ```
-Which will restart the container and then keep you inside it for starting files and whatever is needed.
+
+Which will restart the container and then keep you inside so you can execute the files and whatever you want.
 
 ### Production
-Or if you feel that you've hade enough of all that development. You can then run the system in smaller more production-like containers with the command:
+Or if you feel that you've hade enough of all that development. You can then run the system in smaller more production-like containers. For this some of the submodules needs needs their own .env file, but to make it easier the bashscript setup.bash will take care of it for you. There are two ways to set up all .env files, either by two commands:
 
 ```
-# Pro-tip, you can use the --env flag here aswell.
-./setup.bash up
+# Set up .env-files
+./setup.bash env
+
+# Start system
+./setup.bash prod
 ```
+
+Or with one single command where you can just add the flag --env to the up-command:
+
+```
+# Sets up .env-files and starts the system
+./setup.bash prod --env
+```
+
+## Clients
+No matter how you run the system, our guess is that you want to see some of the clients in action? Well here are some links to find what you might be looking for:
+
+- [Admin web client](http://localhost:3000)
+- [User web client](http://localhost:5173)
+- [User app](http://localhost:5174)
 
 ## Teardown
 Just use the following command to stop the system, shut down the docker-network and remove all images and volumes that was built during setup.

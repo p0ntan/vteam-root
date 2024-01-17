@@ -24,19 +24,18 @@ function usage
 {
     local txt=(
 ""
-"Script $SCRIPT is used to work with log-data."
+"Script $SCRIPT is used for easy setup for system."
 "Usage: $SCRIPT [options] <command> [arguments]"
 ""
 "Commands:"
 ""
-"   env                  Creating all needed .env files."
 "   dev                  Start the system in a development containers."
+"   bike                 Restarts the bike-container and enters it for easier development." 
+"   env                  Creating all needed .env files."
+"   prod                 Start the system in smaller production-like containers."
 "      --env             Use flag --env for setting up the .env files."
-"   prod                 Start the system in production-like containers."
-"      --env             Use flag --env for setting up the .env files."
-"   down                 Shut down the system and remove images and volumes."
 ""
-"   bike                 Restarts the bike-container and enters it for easier development" 
+"   down                 Shut down the system and remove images and volumes."
 ""
 ""
 "Options:"
@@ -82,7 +81,7 @@ function version
 #
 # Function to start the system as close to production as possible
 #
-function app-up
+function app-prod
 {
     if [ "$1" == "--env" ]; then
         app-env
@@ -97,10 +96,6 @@ function app-up
 #
 function app-dev
 {
-    if [ "$1" == "--env" ]; then
-        app-env
-    fi
-
     # Start the system
     docker-compose -f docker-compose.dev.yml up -d --build
 }
@@ -113,6 +108,7 @@ function app-env
 {
     aw_files
     uw_files
+    ua_files
     echo ".env-files created"
 }
 
@@ -148,7 +144,6 @@ function uw_files
 
     echo "$ENV_CONTENT" | grep "^PUBLIC_[^G]" > "$path.env"
     sed -n 's/^UW_\(.*\)$/\1/p' "$ORIGINAL_ENV" >> "$path.env"
-    echo "$ENV_CONTENT" | grep "GITHUB" >> "$path.env"
 }
 
 #
@@ -160,7 +155,6 @@ function ua_files
 
     echo "$ENV_CONTENT" | grep "^PUBLIC_[^G]" > "$path.env"
     sed -n 's/^UA_\(.*\)$/\1/p' "$ORIGINAL_ENV" >> "$path.env"
-    echo "$ENV_CONTENT" | grep "GITHUB" >> "$path.env"
 }
 
 
@@ -199,9 +193,8 @@ function main
                 exit 0
             ;;
 
-            up            \
+            prod          \
             | env         \
-            | setup       \
             | dev         \
             | bike        \
             | down)

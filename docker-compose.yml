@@ -87,3 +87,19 @@ services:
       - "server:express-server"
     ports:
       - 5173:3000
+
+  user-app-service:
+    container_name: user-app-container
+    build:
+      context: "./user-app-client/"
+      dockerfile: "./Dockerfile"
+    environment:
+      # Explicitly tell SvelteKit where the app is being served
+      # to avoid the "Cross-site POST form submissions are forbidden" error
+      # when using form actions with the node adapter
+      - ORIGIN=http://localhost:5174
+    restart: always
+    links:
+      - "server:express-server"
+    ports:
+      - 5174:3000

@@ -1,0 +1,70 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Clients (node) CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: ['main']
+env:
+  PUBLIC_MAPTILER_API_KEY: ${{secrets.MAPTILER_KEY}}
+  PUBLIC_REST_API_URL: ${{secrets.REST_API_URL}}
+  PRIVATE_REST_API_KEY: ${{secrets.REST_API_KEY}}
+  PUBLIC_GITHUB_ID: ${{secrets.APP_ID}}
+  GITHUB_SECRET: ${{secrets.APP_SECRET}}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+      with:
+        submodules: 'recursive'
+
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Install dependencies for admin-web 
+      run: |
+        cd admin-web-client
+        npm ci
+        npx playwright install --with-deps
+    
+    - name: Run admin-web tests
+      run: |
+        cd admin-web-client        
+        npm test
+  
+    - name: Install dependencies for user-web 
+      run: |
+        cd user-web-client
+        npm ci
+        npx playwright install --with-deps
+    
+    - name: Run user-web tests
+      run: |
+        cd user-web-client        
+        npm test
+
+    - name: Install dependencies for user-app 
+      run: |
+        cd user-app-client
+        npm ci
+        npx playwright install --with-deps
+    
+    - name: Run user-app tests
+      run: |
+        cd user-app-client        
+        npm test
