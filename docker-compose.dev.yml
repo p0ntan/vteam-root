@@ -138,8 +138,8 @@ services:
       - PUBLIC_MAPTILER_API_KEY=${PUBLIC_MAPTILER_API_KEY}
       - PUBLIC_REST_API_URL=${PUBLIC_REST_API_URL}
       - PRIVATE_REST_API_KEY=${UW_PRIVATE_REST_API_KEY}
-      - PUBLIC_GITHUB_ID=${PUBLIC_GITHUB_ID}
-      - GITHUB_SECRET=${GITHUB_SECRET}
+      - PUBLIC_GITHUB_ID=${UW_PUBLIC_GITHUB_ID}
+      - GITHUB_SECRET=${UW_GITHUB_SECRET}
     volumes:
       - "./user-web-client/:/app"
       - "user_web_node_modules:/app/node_modules"
@@ -148,3 +148,27 @@ services:
       - "server:express-server"
     ports:
       - 5173:5173
+
+  user-app-service:
+    container_name: user-app-container
+    build:
+      context: "./user-app-client/"
+      dockerfile: "./Dockerfile-dev"
+    environment:
+      # Explicitly tell SvelteKit where the app is being served
+      # to avoid the "Cross-site POST form submissions are forbidden" error
+      # when using form actions with the node adapter
+      - ORIGIN=http://localhost:5174
+      - PUBLIC_MAPTILER_API_KEY=${PUBLIC_MAPTILER_API_KEY}
+      - PUBLIC_REST_API_URL=${PUBLIC_REST_API_URL}
+      - PRIVATE_REST_API_KEY=${UA_PRIVATE_REST_API_KEY}
+      - PUBLIC_GITHUB_ID=${UA_PUBLIC_GITHUB_ID}
+      - GITHUB_SECRET=${UA_GITHUB_SECRET}
+    volumes:
+      - "./user-app-client/:/app"
+      - "user_app_node_modules:/app/node_modules"
+    restart: always
+    links:
+      - "server:express-server"
+    ports:
+      - 5174:5174
