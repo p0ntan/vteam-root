@@ -95,7 +95,7 @@ Or with one single command where you can just add the flag --env to the prod-com
 ```
 
 ## Clients
-No matter how you run the system, our guess is that you want to see some of the clients in action? Well here are some links to find what you might be looking for:
+No matter how you run the system, our guess is that you want to see some of the clients in action? Well here are some links to find what you might be looking for when the system is run locally:
 
 - [Admin web client](http://localhost:3000)
 - [User web client](http://localhost:5173)
