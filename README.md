@@ -101,7 +101,7 @@ No matter how you run the system, our guess is that you want to see some of the 
 - [User web client](http://localhost:5173)
 - [User app](http://localhost:5174)
 
-## REST-APU
+## REST-API
 Locally the REST-API can be reached here:
 
 - [REST-API](http://localhost:1337/v1)
