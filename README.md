@@ -35,6 +35,8 @@ This submodule contains all the code for website used by users. [Link to repo](h
 
 ### user-app-client
 
+This submodule contains all the code for app used by users. [Link to repo](https://github.com/kiwijos/user-app)
+
 ## Setup
 To clone this repo together with all the submodules, run the command:
 
@@ -44,8 +46,9 @@ git clone --recursive https://github.com/p0ntan/vteam-root.git
 # For SSH
 # git clone --recursive git@github.com:p0ntan/vteam-root.git
 ```
+### Environment variables
 
-See the .env.example for needed .env-variables in your own .env to run the system locally.
+See the .env.example for needed .env-variables in your own .env to run the system locally. Most of them arent really a secret, but some are and you need to get your own [Maptiler-API-key](https://cloud.maptiler.com/auth/widget?next=https://cloud.maptiler.com/account/keys/). You'll also need some keys to be able to use OAuth for logging in, and if you don't have any or know how to get your own maybe some of the contributors can help you, just ask!
 
 ### Development
 Once all .env-variables is in place you can then start the system in a development-mode, just run the command: 
@@ -53,8 +56,15 @@ Once all .env-variables is in place you can then start the system in a developme
 ```
 ./setup.bash dev
 ```
+This will start all the submodules in their own containers with all files added as volumes so you keep working with your local files in the editing software of your choice. If you want you can skip the admin/user-clients if they feel too slow in containers (or any other reason), and add the flag --local-clients:
 
-This will start all the submodules in their own containers with all files added as volumes so you keep working with your local files in the editing software of your choice. You can then enter containers to run tests with the command:
+```
+./setup.bash dev --local-clients
+```
+
+This will start all services except the admin-web, user-web and user-app clients. You will then need to add some .env-files to those repos and run them locally, and you can read more about it in their own README.
+
+With the system up and running you can then enter containers to run tests with the command:
 
 ```
 docker exec -it <container-name> bash
@@ -68,7 +78,7 @@ The container for the bike-brain is a bit different, you can still enter it with
 Which will restart the container and then keep you inside so you can execute the files and whatever you want.
 
 ### Production
-Or if you feel that you've hade enough of all that development. You can then run the system in smaller more production-like containers. For this some of the submodules needs needs their own .env file (see admin/user/user-app repos for more detail), but to make it easier the bashscript setup.bash will take care of it for you. There are two ways to set up all .env files, either by two commands:
+Or if you feel that you've had enough of all that development. You can then run the system in smaller more production-like containers. For this some of the submodules needs needs their own .env file (see admin/user/user-app repos for more detail), but to make it easier the bashscript setup.bash will take care of it for you. There are two ways to set up all .env files, either by two commands:
 
 ```
 # Set up .env-files
@@ -78,7 +88,7 @@ Or if you feel that you've hade enough of all that development. You can then run
 ./setup.bash prod
 ```
 
-Or with one single command where you can just add the flag --env to the up-command:
+Or with one single command where you can just add the flag --env to the prod-command:
 
 ```
 # Sets up .env-files and starts the system
@@ -86,11 +96,17 @@ Or with one single command where you can just add the flag --env to the up-comma
 ```
 
 ## Clients
-No matter how you run the system, our guess is that you want to see some of the clients in action? Well here are some links to find what you might be looking for:
+No matter how you run the system, our guess is that you want to see some of the clients in action? Well here are some links to find what you might be looking for when the system is run locally:
 
 - [Admin web client](http://localhost:3000)
 - [User web client](http://localhost:5173)
 - [User app](http://localhost:5174)
+
+## REST-API
+Locally the REST-API can be reached here:
+
+- [REST-API](http://localhost:1337/v1)
+- [DOCS](http://localhost:1337/v1/docs)
 
 ## Teardown
 Just use the following command to stop the system, shut down the docker-network and remove all images and volumes that was built during setup.
