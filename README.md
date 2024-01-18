@@ -35,6 +35,8 @@ This submodule contains all the code for website used by users. [Link to repo](h
 
 ### user-app-client
 
+This submodule contains all the code for app used by users. [Link to repo](https://github.com/kiwijos/user-app)
+
 ## Setup
 To clone this repo together with all the submodules, run the command:
 
@@ -53,8 +55,15 @@ Once all .env-variables is in place you can then start the system in a developme
 ```
 ./setup.bash dev
 ```
+This will start all the submodules in their own containers with all files added as volumes so you keep working with your local files in the editing software of your choice. If you want you can skip the admin/user-clients if they feel too slow in containers (or any other reason), and add the flag --local-clients:
 
-This will start all the submodules in their own containers with all files added as volumes so you keep working with your local files in the editing software of your choice. You can then enter containers to run tests with the command:
+```
+./setup.bash dev --local-clients
+```
+
+This will start all services except the admin-web, user-web and user-app clients. You will then need to add some .env-files to those repos, and you can read more about it in their own README.
+
+With the system up and running you can then enter containers to run tests with the command:
 
 ```
 docker exec -it <container-name> bash
@@ -78,7 +87,7 @@ Or if you feel that you've hade enough of all that development. You can then run
 ./setup.bash prod
 ```
 
-Or with one single command where you can just add the flag --env to the up-command:
+Or with one single command where you can just add the flag --env to the prod-command:
 
 ```
 # Sets up .env-files and starts the system
