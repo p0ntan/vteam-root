@@ -48,7 +48,7 @@ git clone --recursive https://github.com/p0ntan/vteam-root.git
 ```
 ### Environment variables
 
-See the .env.example for needed .env-variables in your own .env to run the system locally. Most of them arent really a secret, but some are and you need to get your own [Maptiler-API-key](https://cloud.maptiler.com/auth/widget?next=https://cloud.maptiler.com/account/keys/). You'll also need some keys to be able to use OAuth for logging in, and if you don't have or know how to get your own. Maybe some of the contributors can help you, just ask!
+See the .env.example for needed .env-variables in your own .env to run the system locally. Most of them arent really a secret, but some are and you need to get your own [Maptiler-API-key](https://cloud.maptiler.com/auth/widget?next=https://cloud.maptiler.com/account/keys/). You'll also need some keys to be able to use OAuth for logging in, and if you don't have any or know how to get your own maybe some of the contributors can help you, just ask!
 
 ### Development
 Once all .env-variables is in place you can then start the system in a development-mode, just run the command: 
