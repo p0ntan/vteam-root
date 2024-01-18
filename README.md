@@ -78,7 +78,7 @@ The container for the bike-brain is a bit different, you can still enter it with
 Which will restart the container and then keep you inside so you can execute the files and whatever you want.
 
 ### Production
-Or if you feel that you've hade enough of all that development. You can then run the system in smaller more production-like containers. For this some of the submodules needs needs their own .env file (see admin/user/user-app repos for more detail), but to make it easier the bashscript setup.bash will take care of it for you. There are two ways to set up all .env files, either by two commands:
+Or if you feel that you've had enough of all that development. You can then run the system in smaller more production-like containers. For this some of the submodules needs needs their own .env file (see admin/user/user-app repos for more detail), but to make it easier the bashscript setup.bash will take care of it for you. There are two ways to set up all .env files, either by two commands:
 
 ```
 # Set up .env-files
