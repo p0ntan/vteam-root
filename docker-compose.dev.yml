@@ -94,6 +94,8 @@ services:
     links:
       - "server:express-server"
     environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTEST_ADDOPTS=-p no:cacheprovider
       - API_URL=${PYTHON_API_URL}
       - API_KEY=${PYTHON_API_KEY}
     depends_on:
