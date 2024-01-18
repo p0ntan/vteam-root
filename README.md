@@ -61,7 +61,7 @@ This will start all the submodules in their own containers with all files added 
 ./setup.bash dev --local-clients
 ```
 
-This will start all services except the admin-web, user-web and user-app clients. You will then need to add some .env-files to those repos, and you can read more about it in their own README.
+This will start all services except the admin-web, user-web and user-app clients. You will then need to add some .env-files to those repos and run them locally, and you can read more about it in their own README.
 
 With the system up and running you can then enter containers to run tests with the command:
 
@@ -100,6 +100,12 @@ No matter how you run the system, our guess is that you want to see some of the 
 - [Admin web client](http://localhost:3000)
 - [User web client](http://localhost:5173)
 - [User app](http://localhost:5174)
+
+## REST-APU
+Locally the REST-API can be reached here:
+
+- [REST-API](http://localhost:1337/v1)
+- [DOCS](http://localhost:1337/v1/docs)
 
 ## Teardown
 Just use the following command to stop the system, shut down the docker-network and remove all images and volumes that was built during setup.
