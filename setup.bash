@@ -30,6 +30,7 @@ function usage
 "Commands:"
 ""
 "   dev                  Start the system in a development containers."
+"      --local-clients   Use flag --local-clients if you want to work with admin/user-clients locally. This will not start the the clients in containers."
 "   bike                 Restarts the bike-container and enters it for easier development." 
 "   env                  Creating all needed .env files."
 "   prod                 Start the system in smaller production-like containers."
@@ -97,7 +98,11 @@ function app-prod
 function app-dev
 {
     # Start the system
-    docker-compose -f docker-compose.dev.yml up -d --build
+    if [ "$1" == "--local-clients" ]; then
+        docker-compose -f docker-compose.dev.yml up -d --build mariadb-bikes mariadb-test server python
+    else
+        docker-compose -f docker-compose.dev.yml up -d --build
+    fi    
 }
 
 
@@ -169,7 +174,6 @@ function app-down
     if [ "$dev" == "" ]; then
         docker-compose down -v --rmi local
     else
-        
         docker-compose -f docker-compose.dev.yml down -v --rmi local
     fi
 }
